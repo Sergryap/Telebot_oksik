@@ -32,11 +32,6 @@ async def echo_all(message):
 	context = await get_context(message)
 	exec(f"user_{user} = TgAgent(context={context})")
 	await eval(f"user_{user}.handler_msg()")
-	# await bot.send_message(
-	# 	chat_id,
-	# 	'<a href="https://vk.com/photo-142029999_457242888">Пример работы</a>',
-	# 	parse_mode="HTML"
-	# )
 
 
 if __name__ == '__main__':

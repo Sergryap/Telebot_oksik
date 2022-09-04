@@ -1,4 +1,5 @@
 import telebot.async_telebot as tb_async
+from telebot.async_telebot import types
 from password import token
 import asyncio
 from TgMethods.TgAgent import TgAgent

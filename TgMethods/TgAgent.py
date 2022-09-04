@@ -1,4 +1,5 @@
 import telebot.async_telebot as tb_async
+from telebot.async_telebot import types
 from password import token
 import asyncio
 import re
@@ -32,6 +33,15 @@ class TgAgent:
 		'verify_our_site': 'send_site',
 		'verify_work_example': 'send_work_example',
 	}
+
+	markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+	btn1 = types.KeyboardButton("Start")
+	btn2 = types.KeyboardButton("Записаться")
+	btn3 = types.KeyboardButton("Адрес")
+	btn4 = types.KeyboardButton("Price")
+	btn5 = types.KeyboardButton("Наши работы")
+	btn6 = types.KeyboardButton("Наш сайт")
+	markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
 
 	def __init__(self, context):
 		self.username = context.get('from_user').get('username', 'Anonymous')
@@ -141,9 +151,12 @@ class TgAgent:
 		t1 = f"{good_time()}, {self.first_name}!\nЯ бот Oksa-studio.\nБуду рад нашему общению.\n{t}{delta}"
 		t2 = f"{good_time()}, {self.first_name}!\nЯ чат-бот Oksa-studio.\nОчень рад видеть Вас у нас.\n{t}{delta}"
 		t3 = f"{good_time()}, {self.first_name}!\nЯ бот этого чата.\nРад видеть Вас у нас в гостях.\n{t}{delta}"
-		await self.bot.send_message(self.chat_id, random.choice([t1, t2, t3]))
+		await self.bot.send_message(self.chat_id, random.choice([t1, t2, t3]), reply_markup=self.markup)
 
 	async def send_link_entry(self):
+		markup = types.InlineKeyboardMarkup()
+		button1 = types.InlineKeyboardButton(text="ON-LINE ЗАПИСЬ", url='https://dikidi.net/72910')
+		markup.add(button1)
 		text = f"""
 		{self.first_name}, узнать о свободных местах, своих записях и/или записаться можно:\n
 		✔️ Самостоятельно: <a href="https://dikidi.net/72910">ON-LINE</a>
@@ -153,16 +166,18 @@ class TgAgent:
 		Что вас еще интересует напишите или выберите ниже:
 		{self.COMMAND}
 		"""
-		await self.bot.send_message(self.chat_id, text, parse_mode="HTML")
+		await self.bot.send_message(self.chat_id, text, parse_mode="HTML", reply_markup=markup)
 
 	async def send_price(self):
-		text = f"""
-		{self.first_name}, цены на наши услуги можно посмотреть здесь:
-		✔️https://vk.com/uslugi-142029999\n
+		markup = types.InlineKeyboardMarkup()
+		button1 = types.InlineKeyboardButton(text="СМОТРЕТЬ PRICE", url="https://vk.com/uslugi-142029999")
+		markup.add(button1)
+		text = f"""		
+		{self.first_name}, цены на наши услуги можно посмотреть здесь: ️<a href="https://vk.com/uslugi-142029999">PRICE</a>\n		
 		Что вас еще интересует напишите или выберите ниже:
 		{self.COMMAND}
 		"""
-		await self.bot.send_message(self.chat_id, text)
+		await self.bot.send_message(self.chat_id, text, parse_mode="HTML", reply_markup=markup)
 
 	async def send_contact_admin(self):
 		text = f"""
@@ -176,16 +191,19 @@ class TgAgent:
 		Что вас еще интересует напишите или выберите ниже:
 		{self.COMMAND}	
 		"""
-		await self.bot.send_message(self.chat_id, text)
+		await self.bot.send_message(self.chat_id, text, reply_markup=self.markup)
 
 	async def send_site(self):
+		markup = types.InlineKeyboardMarkup()
+		button1 = types.InlineKeyboardButton(text="НАШ САЙТ", url='https://oksa-studio.ru/')
+		markup.add(button1)
 		text = f"""
 		{self.first_name}, много полезной информации о наращивании ресниц смотрите на нашем сайте:
 		https://oksa-studio.ru/
 		\nЧто вас еще интересует напишите или выберите ниже.\n
 		{self.COMMAND}
 		"""
-		await self.bot.send_message(self.chat_id, text)
+		await self.bot.send_message(self.chat_id, text, reply_markup=markup)
 
 	async def send_address(self):
 		text1 = f"""
@@ -209,14 +227,14 @@ class TgAgent:
 			parse_mode="HTML"
 		)
 		await self.bot.send_message(self.chat_id, text1)
-		await self.bot.send_message(self.chat_id, text2)
+		await self.bot.send_message(self.chat_id, text2, reply_markup=self.markup)
 
 	async def send_bay_bay(self):
 		text1 = f"До свидания, {self.first_name}. Будем рады видеть вас снова!"
 		text2 = f"До скорых встреч, {self.first_name}. Было приятно с Вами пообщаться. Ждём вас снова!"
 		text3 = f"Всего доброго Вам, {self.first_name}. Надеюсь мы ответили на Ваши вопросы. Ждём вас снова! До скорых встреч."
 		text = random.choice([text1, text2, text3])
-		await self.bot.send_message(self.chat_id, text)
+		await self.bot.send_message(self.chat_id, text, reply_markup=self.markup)
 
 	async def send_work_example(self):
 		text = f"""
@@ -226,7 +244,7 @@ class TgAgent:
 		{self.COMMAND}
 		"""
 		await self.send_photo()
-		await self.bot.send_message(self.chat_id, text)
+		await self.bot.send_message(self.chat_id, text, reply_markup=self.markup)
 
 	async def send_photo(self, photo_id=None):
 		attachment = photo_id if photo_id else await self.get_photos_example()

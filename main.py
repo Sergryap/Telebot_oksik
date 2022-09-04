@@ -52,12 +52,12 @@ async def global_handler(message):
 
 @bot.message_handler(commands=['start'])
 async def send_welcome(message):
-	await global_handler(message)
+	await asyncio.create_task(global_handler(message))
 
 
 @bot.message_handler(func=lambda m: True)
 async def echo_all(message):
-	await global_handler(message)
+	await asyncio.create_task(global_handler(message))
 
 
 if __name__ == '__main__':

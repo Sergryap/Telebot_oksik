@@ -146,14 +146,14 @@ class TgAgent:
 	async def send_link_entry(self):
 		text = f"""
 		{self.first_name}, узнать о свободных местах, своих записях и/или записаться можно:\n
-		✔️ Самостоятельно: https://dikidi.net/72910
+		✔️ Самостоятельно: <a href="https://dikidi.net/72910">ON-LINE</a>
 		✔️ По тел. +7(919)442-35-36
 		✔️ Через личные сообщения: @oksarap (Оксана)
 		✔ Дождаться сообщения от нашего менеджера\n
 		Что вас еще интересует напишите или выберите ниже:
 		{self.COMMAND}
 		"""
-		await self.bot.send_message(self.chat_id, text)
+		await self.bot.send_message(self.chat_id, text, parse_mode="HTML")
 
 	async def send_price(self):
 		text = f"""

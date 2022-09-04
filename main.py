@@ -15,11 +15,11 @@ async def get_context(message):
 	"""
 	return {
 		'from_user': {
-			'username': message.chat.username,
-			'first_name': message.chat.first_name
+			'username': message.from_user.username,
+			'first_name': message.from_user.first_name
 		},
 		'text': message.text.lower().replace('''"''', '').replace("""'""", ''),
-		'chat_id': message.chat.id
+		'chat_id': message.from_user.id
 	}
 
 
@@ -39,7 +39,7 @@ async def global_handler(message):
 	Обработка сообщений пользователя
 	"""
 	global users, users_list
-	user = message.chat.username
+	user = message.from_user.username
 	context = await get_context(message)
 	if user not in users_list:
 		exec(f"user_{user} = TgAgent(context={context})")

@@ -44,11 +44,11 @@ class TgAgent:
 	markup.add(btn1, btn2, btn3, btn4, btn5, btn6)
 
 	def __init__(self, context):
-		self.username = context.get('from_user').get('username', 'Anonymous')
+		self.username = context.get('from_user').get('username')
 		self.first_name = context.get('from_user').get('first_name', self.username)
 		self.chat_id = context.get('chat_id')
-		self.msg = context.get('text', ' ')
-		self.msg_previous = context.get('text', ' ')
+		self.msg = context.get('text')
+		self.msg_previous = context.get('text')
 		self.users_admin = [1642719191]  # администраторы
 
 	async def send_message_to_admins(self):

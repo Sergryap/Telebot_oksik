@@ -39,16 +39,23 @@ class TgAgent:
 		self.chat_id = context.get('chat_id')
 		self.msg = context.get('text', ' ')
 		self.msg_previous = context.get('text', ' ')
-		self.user_admin = []  # администраторы бота
+		self.users_admin = [1642719191]  # администраторы
+
+	async def send_message_to_admins(self):
+		for user in self.users_admin:
+			await self.bot.send_message(user, f'Сообщение:\n "{self.msg}"\n от @{self.username}')
 
 	async def handler_msg(self):
 		"""Функция-обработчик сообщений пользователя"""
 		if await self.verify_hello():
+			await self.send_message_to_admins()
 			return await self.send_hello()
 		for verify, func in self.VERIFY_FUNC.items():
 			if await eval(f'self.{verify}()'):
+				await self.send_message_to_admins()
 				return await eval(f'self.{func}()')
 		await self.clarification()
+		await self.send_message_to_admins()
 
 	async def verify_hello(self):
 		"""Проверка сообщения на приветствие"""

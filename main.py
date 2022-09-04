@@ -4,9 +4,14 @@ import asyncio
 from TgMethods.TgAgent import TgAgent
 
 bot = tb_async.AsyncTeleBot(f'{token}')
+users = {}
+users_list = []
 
 
 async def get_context(message):
+	"""
+	Получение контекста для передачи в класс пользователя
+	"""
 	return {
 		'from_user': {
 			'username': message.chat.username,
@@ -17,21 +22,42 @@ async def get_context(message):
 	}
 
 
-@bot.message_handler(commands=['start'])
-async def send_welcome(message):
+async def users_update(user, message, user_class):
+	"""
+	Добавление экземпляра класса пользователя в глобальный словарь для повторного использования
+	"""
+	global users, users_list
+	users_list.append(user)
+	users.update({
+		f'user_{user}': {'user_class': user_class, 'time_create': message.date}
+	})
+
+
+async def global_handler(message):
+	"""
+	Обработка сообщений пользователя
+	"""
+	global users, users_list
 	user = message.chat.username
 	context = await get_context(message)
-	exec(f"user_{user} = TgAgent(context={context})")
-	await eval(f"user_{user}.handler_msg()")
+	if user not in users_list:
+		exec(f"user_{user} = TgAgent(context={context})")
+		await users_update(user, message, user_class=eval(f"user_{user}"))
+		await eval(f"user_{user}.handler_msg()")
+	else:
+		users[f'user_{user}']['user_class'].msg = context['text']
+		await users[f'user_{user}']['user_class'].handler_msg()
+		users[f'user_{user}']['user_class'].msg_previous = context['text']
+
+
+@bot.message_handler(commands=['start'])
+async def send_welcome(message):
+	await global_handler(message)
 
 
 @bot.message_handler(func=lambda m: True)
 async def echo_all(message):
-	user = message.chat.username
-	chat_id = message.chat.id
-	context = await get_context(message)
-	exec(f"user_{user} = TgAgent(context={context})")
-	await eval(f"user_{user}.handler_msg()")
+	await global_handler(message)
 
 
 if __name__ == '__main__':

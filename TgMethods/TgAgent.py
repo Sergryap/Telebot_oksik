@@ -37,7 +37,8 @@ class TgAgent:
 		self.username = context.get('from_user').get('username', 'Anonymous')
 		self.first_name = context.get('from_user').get('first_name', self.username)
 		self.chat_id = context.get('chat_id')
-		self.msg = context.get('text', ' ').lower().replace('''"''', '').replace("""'""", '')
+		self.msg = context.get('text', ' ')
+		self.msg_previous = context.get('text', ' ')
 		self.user_admin = []  # администраторы бота
 
 	async def handler_msg(self):
